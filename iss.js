@@ -63,5 +63,28 @@ const fetchISSFlyOverTimes = function(coords, callback) {
   });
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
+const nextISSTimesForMyLocation = function(callback) {
+  fetchMyIP((error, ip) => {
+    if (error) {
+      console.log('It didn\'t work, ', error);
+      return;
+    }
+    fetchCoordsByIP(ip, (error, data) => {
+      if (error) {
+        console.log('It didn\'t work, ', error);
+        return;
+      }
+      fetchISSFlyOverTimes(data, (error, flyTimes) => {
+        if (error) {
+          console.log('It didn\'t work, ', error);
+          return;
+        }
+        callback(null, flyTimes);
+        //console.log(`Next pass at Fri Jun 01 2021 13:01:35 GMT-0700 (Pacific Daylight Time) for 465 seconds!`);
+      });
+    });
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes, nextISSTimesForMyLocation };
 // module.exports = { fetchCoordsByIP };
